@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Johnson",
+    "semester": "Fall 2023",
+    "subjects": ["Mathematics", "Physics", "Computer Science"],
+    "contactno": "+1-234-567-8901",
+    "email": "alice.johnson@example.com"
+  },
+  {
+    "id": 2,
+    "name": "Bob Smith",
+    "semester": "Spring 2024",
+    "subjects": ["Chemistry", "Biology", "English"],
+    "contactno": "+1-345-678-9012",
+    "email": "bob.smith@example.com"
+  },
+   {
+    "id": 3,
+    "name": "Charlie Brown",
+    "semester": "Fall 2023",
+    "subjects": ["Mathematics", "Physics", "Computer Science"],
+    "contactno": "+1-456-789-0123",
+    "email": "charlie.brown@example.com"
+  },
+   {
+    "id": 4,
+    "name": "David Wilson",
+    "semester": "Spring 2024",
+    "subjects": ["Chemistry", "Biology", "English"],
+    "contactno": "+1-567-890-1234",
+    "email": "david.wilson@example.com"
+  },
+   {
+    "id": 5,
+    "name": "Eve Davis",
+    "semester": "Fall 2023",
+    "subjects": ["Mathematics", "Physics", "Computer Science"],
+    "contactno": "+1-678-901-2345",
+    "email": "eve.davis@example.com"
+  },
+   {
+    "id": 6,
+    "name": "Frank Miller",
+    "semester": "Spring 2024",
+    "subjects": ["Chemistry", "Biology", "English"],
+    "contactno": "+1-345-678-9012",
+    "email": "frank.miller@example.com"
+  }
+]

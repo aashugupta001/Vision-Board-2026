@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Details Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.light-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+        }
+        .hero-section {
+            text-align: center;
+            padding: 50px 20px;
+            color: white;
+        }
+        .btn-custom {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            transition: transform 0.3s ease;
+        }
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        body.dark-mode .card {
+            background: rgba(44, 62, 80, 0.9);
+            color: #ecf0f1;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        .card-body {
+            padding: 25px;
+        }
+        .subjects-list {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        body.dark-mode .subjects-list {
+            background-color: #34495e;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .error-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        body.dark-mode .error-alert {
+            background-color: #e74c3c;
+            color: #ecf0f1;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pagination {
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        body.dark-mode .stats-bar {
+            background: rgba(44, 62, 80, 0.8);
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <button class="btn btn-secondary toggle-btn" id="themeToggle"><i class="fas fa-moon"></i> Dark Mode</button>
+    
+    <div class="hero-section">
+        <h1 class="display-4"><i class="fas fa-graduation-cap"></i> Student Details Dashboard</h1>
+        <p class="lead">Explore student information with advanced search, filtering, and pagination.</p>
+    </div>
+    
+    <div class="container">
+        <div class="text-center mb-4">
+            <button id="showDetailsBtn" class="btn btn-custom">
+                <i class="fas fa-eye"></i> Load Student Details
+            </button>
+        </div>
+        
+        <div id="statsBar" class="stats-bar" style="display: none;">
+            <h5><i class="fas fa-chart-bar"></i> Dashboard Stats</h5>
+            <p>Total Students: <span id="totalStudents">0</span> | Showing Page <span id="currentPage">1</span> of <span id="totalPages">1</span></p>
+        </div>
+        
+        <div class="mb-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by name, semester, or subjects..." style="display: none;">
+        </div>
+        
+        <div id="loadingSpinner" class="loading" style="display: none;">
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Fetching student data...</p>
+        </div>
+        
+        <div id="studentCards" class="row"></div>
+        
+        <nav id="paginationNav" style="display: none;">
+            <ul class="pagination"></ul>
+        </nav>
+        
+        <div id="errorMessage" class="error-alert" style="display: none;"></div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Student Portal. Built with Bootstrap & jQuery.</p>
+    </footer>
+
+    <script>
+        let allStudents = [];
+        let filteredStudents = [];
+        let currentPage = 1;
+        const itemsPerPage = 6;
+
+        $(document).ready(function() {
+            // Theme toggle
+            $('#themeToggle').click(function() {
+                $('body').toggleClass('light-mode dark-mode');
+                $(this).html($('body').hasClass('dark-mode') ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode');
+            });
+
+            $('#showDetailsBtn').click(function() {
+                $('#loadingSpinner').show();
+                $('#studentCards').hide();
+                $('#errorMessage').hide();
+                
+                $.ajax({
+                    type: "GET",
+                    url: "students.json",
+                    dataType: "json",
+                    success: function(data) {
+                        $('#loadingSpinner').hide();
+                        allStudents = data;
+                        filteredStudents = data;
+                        renderPage(1);
+                        $('#statsBar').show();
+                        $('#searchInput').show();
+                        $('#paginationNav').show();
+                        updateStats();
+                    },
+                    error: function() {
+                        $('#loadingSpinner').hide();
+                        $('#errorMessage').html('<i class="fas fa-exclamation-triangle"></i> Error loading student data. Please check the JSON file path.').show();
+                    }
+                });
+            });
+
+            // Search functionality
+            $('#searchInput').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                filteredStudents = allStudents.filter(student =>
+                    student.name.toLowerCase().includes(query) ||
+                    student.semester.toLowerCase().includes(query) ||
+                    student.subjects.some(sub => sub.toLowerCase().includes(query))
+                );
+                renderPage(1);
+                updateStats();
+            });
+        });
+
+        function renderPage(page) {
+            currentPage = page;
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredStudents.slice(start, end);
+            
+            let cardsHtml = '';
+            pageData.forEach(function(student) {
+                let subjects = student.subjects.join(', ');
+                cardsHtml += `
+                    <div class="col-md-6 col-lg-4 fade-in">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-user-graduate"></i> ${student.name}</h5>
+                                <p class="card-text"><strong>ID:</strong> ${student.id}</p>
+                                <p class="card-text"><strong>Semester:</strong> ${student.semester}</p>
+                                <p class="card-text"><strong>Subjects:</strong></p>
+                                <div class="subjects-list">${subjects}</div>
+                                <p class="card-text"><i class="fas fa-phone"></i> <strong>Contact:</strong> ${student.contactno}</p>
+                                <p class="card-text"><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:${student.email}">${student.email}</a></p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            $('#studentCards').html(cardsHtml).show();
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+            let paginationHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="renderPage(${i})">${i}</a></li>`;
+            }
+            $('.pagination').html(paginationHtml);
+        }
+
+        function updateStats() {
+            $('#totalStudents').text(allStudents.length);
+            $('#currentPage').text(currentPage);
+            $('#totalPages').text(Math.ceil(filteredStudents.length / itemsPerPage));
+        }
+    </script>
+</body>
+</html>
