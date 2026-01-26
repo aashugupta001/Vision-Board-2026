@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<employees>
+  <employee>
+    <id>1</id>
+    <firstname>John</firstname>
+    <lastname>Doe</lastname>
+    <title>Software Engineer</title>
+    <department>IT</department>
+    <contactno>+1-123-456-7890</contactno>
+    <email>john.doe@example.com</email>
+  </employee>
+  <employee>
+    <id>2</id>
+    <firstname>Jane</firstname>
+    <lastname>Smith</lastname>
+    <title>Project Manager</title>
+    <department>Operations</department>
+    <contactno>+1-987-654-3210</contactno>
+    <email>jane.smith@example.com</email>
+  </employee>
+  <employee>
+    <id>2</id>
+    <firstname>Jane</firstname>
+    <lastname>Smith</lastname>
+    <title>Project Manager</title>
+    <department>Operations</department>
+    <contactno>+1-987-654-3210</contactno>
+    <email>jane.smith@example.com</email>
+  </employee>
+  <employee>
+    <id>3</id>
+    <firstname>Sem</firstname>
+    <lastname>Smith</lastname>
+    <title>Manager</title>
+    <department>Operations</department>
+    <contactno>+1-987-654-3210</contactno>
+    <email>sem.smith@example.com</email>
+  </employee>
+  <employee>
+    <id>4</id>
+    <firstname>Mini</firstname>
+    <lastname>Smith</lastname>
+    <title>Project manager</title>
+    <department>Operations</department>
+    <contactno>+1-987-654-3210</contactno>
+    <email>mini.smith@example.com</email>
+  </employee>
+</employees>

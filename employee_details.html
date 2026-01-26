@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        #employeeTable {
+            display: none; /* Hidden initially */
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Details</h1>
+    <button id="showDetailsBtn">Show Employee Details</button>
+    <div id="employeeTable"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#showDetailsBtn').click(function() {
+                // AJAX call to load the XML file
+                $.ajax({
+                    type: "GET",
+                    url: "employees.xml", // Path to your XML file (relative)
+                    dataType: "xml",
+                    success: function(xml) {
+                        // Parse XML and build the table
+                        let tableHtml = '<table><thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Title</th><th>Department</th><th>Contact No</th><th>Email</th></tr></thead><tbody>';
+                        
+                        $(xml).find('employee').each(function() {
+                            let id = $(this).find('id').text();
+                            let firstname = $(this).find('firstname').text();
+                            let lastname = $(this).find('lastname').text();
+                            let title = $(this).find('title').text();
+                            let department = $(this).find('department').text();
+                            let contactno = $(this).find('contactno').text();
+                            let email = $(this).find('email').text();
+                            
+                            tableHtml += `<tr><td>${id}</td><td>${firstname}</td><td>${lastname}</td><td>${title}</td><td>${department}</td><td>${contactno}</td><td>${email}</td></tr>`;
+                        });
+                        
+                        tableHtml += '</tbody></table>';
+                        $('#employeeTable').html(tableHtml).show(); // Display the table
+                    },
+                    error: function() {
+                        $('#employeeTable').html('<p class="error">Error loading employee data. Please check the XML file path and ensure you\'re running on a server.</p>').show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
