@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notes Keeper App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .note-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .note-input input,
+    .note-input textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .note-input textarea {
+      height: 80px;
+      resize: none;
+    }
+
+    .note-input button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #667eea;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .note-input button:hover {
+      background: #5a6fdc;
+    }
+
+    .notes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .note {
+      background: #f4f4f4;
+      padding: 12px;
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .note h3 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .note p {
+      font-size: 13px;
+      color: #555;
+      white-space: pre-wrap;
+    }
+
+    .delete {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .delete:hover {
+      background: darkred;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>📝 Notes Keeper App</h1>
+
+    <div class="note-input">
+      <input type="text" id="title" placeholder="Note title">
+      <textarea id="content" placeholder="Write your note here..."></textarea>
+      <button onclick="addNote()">Add Note</button>
+    </div>
+
+    <div class="notes" id="notesContainer"></div>
+  </div>
+
+  <script>
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+    function addNote() {
+      const title = document.getElementById("title").value.trim();
+      const content = document.getElementById("content").value.trim();
+
+      if (title === "" || content === "") {
+        alert("Please enter both title and note content");
+        return;
+      }
+
+      const note = { title, content };
+      notes.push(note);
+      localStorage.setItem("notes", JSON.stringify(notes));
+
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+
+      displayNotes();
+    }
+
+    function deleteNote(index) {
+      notes.splice(index, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      displayNotes();
+    }
+
+    function displayNotes() {
+      const container = document.getElementById("notesContainer");
+      container.innerHTML = "";
+
+      notes.forEach((note, index) => {
+        const div = document.createElement("div");
+        div.className = "note";
+
+        div.innerHTML = `
+          <button class="delete" onclick="deleteNote(${index})">×</button>
+          <h3>${note.title}</h3>
+          <p>${note.content}</p>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    displayNotes();
+  </script>
+
+</body>
+</html>
